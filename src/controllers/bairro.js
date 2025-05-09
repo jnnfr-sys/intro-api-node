@@ -26,6 +26,9 @@ module.exports = {
 
     async inserirBairros(request, response){
         try {
+
+
+
             return response.status(200).json({
                 sucesso: true,
                 mensagem: 'Inserir Bairros.',
@@ -58,9 +61,27 @@ module.exports = {
 
     async excluirBairros(request, response){
         try {
+            // Parametro passado via url na chamada da api pelo front-end
+            const { id } = request.params;
+            // comando de exclusão
+            const sql = `DELETE FROM bairro WHERE ID_Bairro = ?`;
+            // array com parametro de exclusão
+            const values = [id];
+            // executa instrução no banco de dados
+            const [result] = await db.query(sql, values);
+
+            if (result.affectedRows === 0){
+                return response.status(404).json({
+                    sucesso: false,
+                    mensagem: `Bairro ${ID_Bairro} não encontrado!`,
+                    dados: null
+                });
+            }
+
+
             return response.status(200).json({
                 sucesso: true,
-                mensagem: 'Excluir Bairros.',
+                mensagem: `Bairro ${id} excluído com sucesso.`,
                 dados:null
             });
         }catch (error) {

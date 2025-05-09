@@ -6,6 +6,6 @@ const BairroController = require('../controllers/bairro');
 router.get('/bairro', BairroController.listarBairros);
 router.post('/bairro', BairroController.atualizarBairros);
 router.patch('/bairro', BairroController.inserirBairros);
-router.delete('/bairro', BairroController.excluirBairros);
+router.delete('/bairro/:id', BairroController.excluirBairros); //params
  
 module.exports = router;
