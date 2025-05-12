@@ -26,13 +26,28 @@ module.exports = {
 
     async inserirBairros(request, response){
         try {
+            const { id_bairro, nm_bairro, id_setor } = request.body;
 
+            const sql = `
+                 INSERT INTO bairro
+                     (ID_Bairro, NM_Bairro, ID_Setor)
+                 VALUE
+                     (?,?,?)`;
 
+            const values = [id_baiiro, nm_bairro, id_setor];
+
+            const [result] = await db.query(sql, values);
+
+            const dados = {
+                id: result.insertId,
+                nm_bairro,
+                id_setor
+            };
 
             return response.status(200).json({
                 sucesso: true,
-                mensagem: 'Inserir Bairros.',
-                dados:null
+                mensagem: 'Inserção realizada.',
+                dados: dados
             });
         }catch (error) {
             return response.status(500).json({
@@ -45,10 +60,39 @@ module.exports = {
 
     async atualizarBairros(request, response){
         try {
+            const { nm_bairro, id_setor } = request.body;
+
+            const { id } = request.params;
+
+            const sql = `
+                UPDATE bairro SET
+                    NM_bairro = ?, ID_setor = ?
+                WHERE
+                    ID_bairro = ?;
+            `;
+
+            const values = [nm_bairro, id_setor, id];
+
+            const [result] = await db.query(sql, values);
+
+            if (result.affectedRows === 0){
+                return response.status(404).json({
+                    sucesso: false,
+                    mensagem: `Bairro ${id} não encontrado!`,
+                    dados: null
+                });
+            }
+
+            const dados = {
+                id,
+                nm_bairro,
+                id_setor
+            };
+            
             return response.status(200).json({
                 sucesso: true,
-                mensagem: 'Atualizar Bairros.',
-                dados:null
+                mensagem: `Bairro ${id} atualizado com sucesso!`,
+                dados
             });
         }catch (error) {
             return response.status(500).json({
